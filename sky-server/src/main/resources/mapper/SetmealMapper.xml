@@ -1,40 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.sky.mapper.DishMapper">
+<mapper namespace="com.sky.mapper.SetmealMapper">
 
 
-    <insert id="insert"  useGeneratedKeys="true" keyProperty="id">
-        insert into dish (name, category_id, price, image, description, status, create_time, update_time, create_user, update_user)
-            values
-        (#{name}, #{categoryId}, #{price}, #{image}, #{description}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    <insert id="insert" parameterType="Setmeal" useGeneratedKeys="true" keyProperty="id">
+        insert into setmeal
+        (category_id, name, price, status, description, image, create_time, update_time, create_user, update_user)
+        values (#{categoryId}, #{name}, #{price}, #{status}, #{description}, #{image}, #{createTime}, #{updateTime},
+                #{createUser}, #{updateUser})
     </insert>
 
-    <delete id="deleteByIds">
-        delete from dish where id in
-        <foreach collection="ids" item="id" open="(" close=")" separator=",">
-            #{id}
-        </foreach>
-    </delete>
-
-    <select id="pageQuery" resultType="com.sky.vo.DishVO">
-        select d.*, c.name as categoryName from dish d left outer join category c on d.category_id = c.id
+    <select id="pageQuery" resultType="com.sky.vo.SetmealVO">
+        select
+        s.*,c.name categoryName
+        from
+        setmeal s
+        left join
+        category c
+        on
+        s.category_id = c.id
         <where>
             <if test="name != null">
-                and d.name like concat('%', #{name}, '%')
-            </if>
-            <if test="categoryId != null">
-                and d.category_id = #{categoryId}
+                and s.name like concat('%',#{name},'%')
             </if>
             <if test="status != null">
-                and d.status = #{status}
+                and s.status = #{status}
+            </if>
+            <if test="categoryId != null">
+                and s.category_id = #{categoryId}
             </if>
         </where>
-        order by d.create_time desc
+        order by s.create_time desc
     </select>
 
     <update id="update">
-        update dish
+        update setmeal
         <set>
             <if test="name != null">name = #{name},</if>
             <if test="categoryId != null">category_id = #{categoryId},</if>
@@ -45,11 +46,10 @@
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="updateUser != null">update_user = #{updateUser},</if>
         </set>
-        where id = #{id}
     </update>
 
-    <select id="list" resultType="Dish" parameterType="Dish">
-        select * from dish
+    <select id="list" parameterType="Setmeal" resultType="Setmeal">
+        select * from setmeal
         <where>
             <if test="name != null">
                 and name like concat('%',#{name},'%')
@@ -61,6 +61,5 @@
                 and status = #{status}
             </if>
         </where>
-        order by create_time desc
     </select>
 </mapper>
