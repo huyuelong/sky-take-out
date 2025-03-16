@@ -40,7 +40,7 @@ public class DishController {
     @PostMapping
     @ApiOperation("新增菜品")
     public Result<Void> save(@RequestBody DishDTO dishDTO) {
-        log.info("新增彩屏：{}", dishDTO);
+        log.info("新增菜品：{}", dishDTO);
         dishService.saveWithFlavor(dishDTO);
 
         //清理缓存数据
